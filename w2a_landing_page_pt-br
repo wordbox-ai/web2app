@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordbox: Aprenda Inglês com Séries de TV</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '642900614023443');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=642900614023443&ev=PageView&noscript=1"
+/></noscript>
+    <!-- End Facebook Pixel Code -->
+
+    <style>
+        /* Applying the Mulish font family and base colors from the design system */
+        body {
+            font-family: 'Mulish', sans-serif;
+            background-color: #161827; /* indigo_15 */
+            color: #D9D9D9; /* secondary_70/03 */
+        }
+        /* Custom styles for the hero animation overlay */
+        .animation-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(22, 24, 39, 0.85); /* indigo_15 with more opacity */
+            z-index: 1;
+        }
+        /* Styles for the hero background animation */
+        #hero-animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            display: flex;
+            justify-content: center;
+            gap: 16px; 
+        }
+
+        .scrolling-column {
+            display: flex;
+            flex-direction: column;
+            width: 250px; /* Width of the posters */
+            animation: scroll-vertical 80s linear infinite;
+        }
+
+        .scrolling-column.reverse {
+            animation-direction: reverse;
+        }
+        
+        @keyframes scroll-vertical {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-50%); /* Scrolls up by half the column height */
+            }
+        }
+
+        .scrolling-column img {
+            width: 100%;
+            height: auto;
+            opacity: 0.85;
+            margin-bottom: 16px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-[#161827] text-[#D9D9D9]">
+
+    <!-- Header / Hero Section -->
+    <header class="relative h-[65vh] flex items-center justify-center text-center overflow-hidden">
+        <!-- Background Animation -->
+        <div id="hero-animation-container"></div>
+        <div class="animation-overlay"></div>
+        <div class="relative z-10 p-4">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter">Aprenda <span class="text-[#3366FF]">inglês de verdade</span> com séries de TV</h1>
+            <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-200">
+                Chega de decorar palavras soltas. Comece a falar com confiança usando as séries que você ama!
+            </p>
+            <div class="mt-8">
+                <a href="https://wordboxenglish.sng.link/E0g3a/23vc?_dl=premium&_smtype=3" class="inline-flex items-center gap-3 bg-[#00CE67] text-white font-bold text-lg px-10 py-4 rounded-full uppercase tracking-wider shadow-lg hover:bg-green-500 transition-all duration-300 transform hover:scale-105">
+                    Baixe o App
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+            
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="py-12 sm:py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <!-- Store Ratings -->
+                <div class="flex justify-center items-end space-x-8 md:space-x-12 mb-12">
+                    <!-- App Store Rating -->
+                    <a href="https://wordboxenglish.sng.link/E0g3a/23vc?_dl=premium&_smtype=3" class="flex flex-col items-center transition-transform transform hover:scale-105">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store Logo" class="h-12 mb-2">
+                        <div class="flex text-[#FFDD00]">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-400">Avaliação na App Store</p>
+                        <p class="text-lg font-bold text-white">4.9/5</p>
+                    </a>
+                    <!-- Google Play Rating -->
+                    <a href="https://wordboxenglish.sng.link/E0g3a/23vc?_dl=premium&_smtype=3" class="flex flex-col items-center transition-transform transform hover:scale-105">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/2560px-Google_Play_Store_badge_EN.svg.png" alt="Google Play Logo" class="h-12 mb-2">
+                        <div class="flex text-[#FFDD00]">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-400">Avaliação na Google Play</p>
+                        <p class="text-lg font-bold text-white">4.9/5</p>
+                    </a>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">O único app de inglês que você vai precisar</h2>
+                <p class="mt-2 text-lg text-gray-400">Tudo o que você precisa para ir do básico ao fluente.</p>
+            </div>
+            <div class="max-w-5xl mx-auto grid grid-cols-2 gap-4 md:gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-[#262A5E] p-8 rounded-2xl border border-[#3A3C84] hover:border-[#3366FF] transition-colors duration-300 transform hover:-translate-y-2">
+                    <div class="text-[#3366FF] mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Aprenda com Séries de TV</h3>
+                    <p class="text-gray-400">Aprenda inglês do dia a dia com mais de 300 séries! Nada de livros chatos.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="bg-[#262A5E] p-8 rounded-2xl border border-[#3A3C84] hover:border-[#3366FF] transition-colors duration-300 transform hover:-translate-y-2">
+                    <div class="text-[#3366FF] mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V3m0 18v-3M5.636 5.636l-.707-.707M18.364 18.364l-.707-.707M5.636 18.364l-.707.707M18.364 5.636l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Lições com IA</h3>
+                    <p class="text-gray-400">Nossa IA se adapta ao seu nível e cria lições de vocabulário e gramática feitas pra você.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="bg-[#262A5E] p-8 rounded-2xl border border-[#3A3C84] hover:border-[#3366FF] transition-colors duration-300 transform hover:-translate-y-2">
+                    <div class="text-[#3366FF] mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Acompanhe seu Progresso</h3>
+                    <p class="text-gray-400">Faça testes diários e use o acompanhamento inteligente para ver sua evolução.</p>
+                </div>
+                <!-- Feature 4 -->
+                <div class="bg-[#262A5E] p-8 rounded-2xl border border-[#3A3C84] hover:border-[#3366FF] transition-colors duration-300 transform hover:-translate-y-2">
+                    <div class="text-[#3366FF] mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Dicionário Interativo</h3>
+                    <p class="text-gray-400">Aprenda significados, usos e pronúncia com lições práticas direto do dicionário.</p>
+                </div>
+            </div>
+            <div class="mt-16 text-center">
+                <a href="https://wordboxenglish.sng.link/E0g3a/23vc?_dl=premium&_smtype=3" class="inline-block bg-[#00CE67] text-white font-bold text-lg px-10 py-4 rounded-full uppercase tracking-wider shadow-lg hover:bg-green-500 transition-all duration-300 transform hover:scale-105">
+                    Comece no Wordbox English
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-12 sm:py-20 bg-[#2A2B72]">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Junte-se a mais de 2 milhões de alunos satisfeitos</h2>
+                <p class="mt-2 text-lg text-gray-400">Veja o que estão dizendo sobre o Wordbox:</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-[#171934] p-8 rounded-2xl">
+                    <p class="text-lg text-white mb-4">"Este app é incrível! Alguma chance de vocês lançarem versões para mais idiomas? Eu falei dele para meus alunos de inglês, mas seria ótimo também para meus alunos de alemão, e eu adoraria usá-lo para aprender francês"</p>
+                    <footer class="text-[#3366FF] font-bold">— Constanza Kuch</footer>
+                </div>
+                <!-- Testimonial 2 -->
+                <div class="bg-[#171934] p-8 rounded-2xl">
+                    <p class="text-lg text-white mb-4">"Muito bom app,as aulas são muito interativas e bem legais por misturar séries que assistimos no nosso dia a dia"</p>
+                    <footer class="text-[#3366FF] font-bold">— Arthur Ferreira</footer>
+                </div>
+                <!-- Testimonial 3 -->
+                <div class="bg-[#171934] p-8 rounded-2xl">
+                    <p class="text-lg text-white mb-4">"Melhor app pra aprender inglês, apenas!"</p>
+                    <footer class="text-[#3366FF] font-bold">— Chris Fe Youtube </footer>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section id="final-cta" class="py-12 sm:py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-white">Pronto para Começar sua Jornada?</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-300">
+                Alcance a fluência mais rápido do que você imaginava. Comece com o Wordbox hoje.
+            </p>
+            <div class="mt-8">
+                <a href="https://wordboxenglish.sng.link/E0g3a/23vc?_dl=premium&_smtype=3" class="inline-block bg-[#00CE67] text-white font-bold text-lg px-10 py-4 rounded-full uppercase tracking-wider shadow-lg hover:bg-green-500 transition-all duration-300 transform hover:scale-105">
+                    Junte-se ao Wordbox English
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#2A2B72] border-t border-[#3A3C84]">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-400">
+            <p>&copy; 2024 Wordbox. Todos os direitos reservados.</p>
+            <p class="text-sm mt-2">Feito para tornar o aprendizado de inglês simples e divertido.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hero Animation
+            const imageUrls = [
+                "https://storage.googleapis.com/wordboximagesapp/series/BREAKING_BAD.jpg",
+                "https://storage.googleapis.com/wordboximagesapp/series/GAME_OF_THRONES.jpg",
+                "https://storage.googleapis.com/wordboximagesapp/series/STRANGER_THINGS.jpg",
+                "https://storage.googleapis.com/wordboximagesapp/series/SHERLOCK.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/squid_game.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/the_queens_gambit.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/the_boys.jpg",
+                "https://storage.googleapis.com/wordboximagesapp/series/FUTURAMA.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/Black_Mirror.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/Better_Call_Saul.jpg",
+                "https://storage.googleapis.com/wordboximagesapp/series/GREYS_ANATOMY.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/Avatar_The_Last_Airbender.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/Westworld.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/Chilling_Adventures_of_Sabrina.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/adventure_time.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/american_horror_story.jpg",
+                "https://storage.googleapis.com/wordboximagesapp/series/ARCHER.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/Attack_on_Titan.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/BOJACK_HORSEMAN.jpg",
+                "https://wordboximagesapp.storage.googleapis.com/series/cobra_kai.jpg",
+                "https://storage.googleapis.com/wordboximagesapp/series/DOCTOR_WHO.jpg"
+            ];
+
+            const container = document.getElementById('hero-animation-container');
+            const numColumns = 5; // Adjust number of columns
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            for (let i = 0; i < numColumns; i++) {
+                const column = document.createElement('div');
+                column.className = 'scrolling-column';
+                if (i % 2 === 0) {
+                    column.classList.add('reverse');
+                }
+                
+                const shuffledImages = shuffleArray([...imageUrls]);
+                const images = [...shuffledImages, ...shuffledImages]; // Duplicate for seamless loop
+
+                images.forEach(src => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.onerror = function() { this.style.display='none'; };
+                    column.appendChild(img);
+                });
+                container.appendChild(column);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
