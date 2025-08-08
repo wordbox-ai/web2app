@@ -1,0 +1,1402 @@
+<!DOCTYPE html><html lang="es"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Wordbox: v7.4 (Scramble Polish, Video Controls, Tooltip Tap)</title> 
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"> 
+    <style>
+        :root { 
+            --bg-primary: #0A0318; 
+            --bg-element: #1C103A; 
+            --bg-element-hover: #281A4F; 
+            --text-primary: #F0F0F8; 
+            --text-secondary: #A098B8; 
+            --text-white: #FFFFFF;
+            --accent-blue: #6A3EFF; 
+            --accent-blue-light: #8A6FFF; 
+            --accent-magenta: #FF00A9; 
+            --accent-cyan: #00E0FF; 
+            --keyword-bg: #FFFFFF; 
+            --keyword-text: #0A0318; 
+            --progress-bar-fill: #39FF14; 
+            --progress-bar-bg: #30205A; 
+            --icon-color: #B0A8D0; 
+            --tooltip-bg: #30205A; 
+            --tooltip-text: #EAE6FC; 
+            --font-main: 'Mulish', 'Poppins', sans-serif; 
+            --accent-blue-glow: rgba(106, 62, 255, 0.5); 
+            --accent-magenta-glow: rgba(255, 0, 169, 0.6); 
+            --correct-green: #39FF14; 
+            --incorrect-red: #FF3131; 
+            --transition-speed-fast: 0.2s; 
+            --transition-speed-medium: 0.3s; 
+            --transition-speed-slow: 0.4s; 
+            --tile-bg: #2a1a4d;
+            --tile-border: #4a3a7d;
+            --drop-zone-bg: rgba(42, 26, 77, 0.5); 
+            --drop-indicator-color: var(--accent-magenta); /* Color for insertion marker */
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; } 
+        html, body { height: 100%; overflow: hidden; }
+        body { 
+            font-family: var(--font-main); 
+            background-color: var(--bg-primary); 
+            color: var(--text-primary); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale; 
+        }
+        .container { 
+            width: 100%; 
+            max-width: 400px; 
+            height: 100%; 
+            max-height: 750px;
+            background-color: var(--bg-primary); 
+            padding: 0; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .app-header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 10px 15px; 
+            width: 100%; 
+            position: sticky; 
+            top: 0;
+            background-color: var(--bg-primary); 
+            z-index: 100; 
+            min-height: 50px; 
+            border-bottom: 1px solid var(--bg-element); 
+            flex-shrink: 0; 
+        }
+        .app-header .close-btn { 
+            font-size: 1.8em; 
+            color: var(--icon-color); 
+            text-decoration: none; 
+            font-weight: 300; 
+            cursor: pointer; 
+            visibility: visible; 
+            transition: color var(--transition-speed-fast) ease; 
+        }
+        .app-header .close-btn:hover { color: var(--accent-magenta); } 
+        .app-header.hidden { display: none; }
+        .app-header .progress-bar-container { 
+            flex-grow: 1; 
+            height: 8px; 
+            background-color: var(--progress-bar-bg); 
+            border-radius: 4px; 
+            margin: 0 12px; 
+            overflow: hidden; 
+        }
+        .app-header .progress-bar-fill { 
+            width: 0%; 
+            height: 100%; 
+            background-color: var(--progress-bar-fill); 
+            border-radius: 4px; 
+            transition: width 0.3s ease-in-out; 
+        }
+        .app-header .score-display { 
+            font-size: 0.85em; 
+            font-weight: 700; 
+            color: var(--accent-magenta); 
+            background-color: var(--bg-element); 
+            padding: 4px 8px; 
+            border-radius: 6px; 
+        }
+        .hidden { display: none !important; }
+        .screen-section { 
+            width: 100%; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            padding: 0 15px 20px 15px; 
+            animation: fadeInScreen 0.4s ease-out forwards; 
+            position: relative; 
+        }
+        .screen-section::-webkit-scrollbar { width: 6px; } 
+        .screen-section::-webkit-scrollbar-track { background: var(--bg-primary); } 
+        .screen-section::-webkit-scrollbar-thumb { background: var(--bg-element-hover); border-radius: 3px;} 
+
+        @keyframes fadeInScreen { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        #series-selection-screen { justify-content: center; padding-top: 20px; } 
+        #series-selection-screen h2 { 
+            color: var(--text-white); 
+            font-size: 2.5em; 
+            font-weight: 900; 
+            margin-bottom: 30px; 
+            text-align: center; 
+            letter-spacing: -0.02em; 
+        }
+        #series-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 18px; 
+            width: 100%; 
+            max-width: 320px; 
+        }
+        .series-card { 
+            background-color: var(--bg-element); 
+            border-radius: 12px; 
+            padding: 18px; 
+            cursor: pointer; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+        }
+        .series-card:hover { 
+            transform: scale(1.04); 
+            box-shadow: 0 0 18px var(--accent-blue-glow); 
+        }
+        .series-card img { 
+            width: 100%; 
+            max-height: 160px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            margin-bottom: 12px; 
+        }
+        .series-card p { 
+            font-weight: 600; 
+            color: var(--text-primary); 
+            font-size: 1.1em; 
+        }
+        /* Lesson screen layout adjustments */
+        #lesson-screen { 
+            justify-content: flex-start; 
+            padding-top: 10px; 
+        } 
+        #lesson-content-wrapper { 
+             width: 100%;
+             flex-grow: 1; 
+             display: flex;
+             flex-direction: column;
+             overflow-y: auto; 
+             overflow-x: hidden;
+             margin-bottom: 10px; 
+        }
+        #lesson-content-wrapper > *:not(#post-answer-translation-area) { 
+             flex-shrink: 0; 
+        }
+        /* Video container - overlay removed */
+        #video-player-container { 
+            width: 100%; 
+            margin-bottom: 8px; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4); 
+            background-color: #000; 
+            position: relative; 
+        }
+        #video-player-container iframe { 
+            display: block; 
+            width: 100%; 
+            height: 190px; 
+            border: none; 
+        }
+        /* Removed overlay style */
+        .video-controls-placeholder { 
+            display: none; 
+        }
+       
+        #question-prompt { 
+            font-size: 0.95em; 
+            color: var(--text-secondary); 
+            margin-bottom: 10px; 
+            font-weight: 600; 
+            width: 100%; 
+            text-align: center; 
+            padding: 5px; 
+            background-color: transparent; 
+            border-radius: 6px; 
+        }
+        #question-prompt.summary-prompt {
+             font-size: 1.2em; 
+             font-weight: 700;
+             color: var(--text-primary); 
+             background-color: transparent; 
+             margin-top: 20px; 
+             margin-bottom: 20px;
+        }
+
+        #question-content-area { 
+            width:100%; 
+            text-align:center; 
+            margin-bottom: 10px; 
+            position: relative; 
+        }
+        #subtitle-text { 
+            font-size: 1.3em; 
+            padding: 8px 6px; 
+            background-color: var(--bg-element); 
+            color: var(--text-primary); 
+            line-height: 1.5; 
+            font-weight: 700; 
+            text-align: center; 
+            min-height: 50px; 
+            border-radius: 8px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative; 
+            z-index: 1;
+            margin-bottom: 10px; 
+        }
+        #subtitle-text .keyword-highlight { 
+            background-color: var(--keyword-bg); 
+            color: var(--keyword-text); 
+            padding: 3px 8px; 
+            border-radius: 6px; 
+            font-weight: 800; 
+            display: inline; 
+            margin: 0; 
+            position: relative; 
+            cursor: default;
+             box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+        #subtitle-text .keyword-placeholder {
+            background-color: transparent;
+            border: 2px dashed var(--accent-blue); 
+            color: var(--accent-blue); 
+            padding: 3px 5px; 
+            border-radius: 6px; 
+            font-weight: 800; 
+            display: inline-flex; 
+             align-items: center;
+             justify-content: center;
+             min-width: 50px; 
+             min-height: 1.8em; 
+             margin: 1px; 
+             vertical-align: middle; 
+        }
+        #subtitle-text .keyword-revealed { 
+            background-color: var(--keyword-bg); color: var(--keyword-text);
+            padding: 3px 8px; border-radius: 6px; font-weight: 800;
+            display: inline-block; margin: 1px;
+        }
+        #subtitle-text .word-token { 
+            font-weight: 600; 
+            padding: 3px 1px; 
+            margin: 1px; 
+            display: inline-block; 
+            position: relative; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            transition: background-color 0.2s ease;
+        }
+         #subtitle-text .word-token:hover {
+             background-color: rgba(255, 255, 255, 0.1); 
+         }
+        .word-token .tooltip-text { 
+            visibility: hidden; width: auto; min-width: 80px; background-color: var(--tooltip-bg); 
+            color: var(--tooltip-text); text-align: center; border-radius: 6px; padding: 6px 10px; 
+            position: absolute; z-index: 10; bottom: 135%; left: 50%; transform: translateX(-50%); 
+            opacity: 0; transition: opacity var(--transition-speed-fast) ease-in-out, visibility 0s linear var(--transition-speed-fast); 
+            font-size: 0.85em; font-weight: 500; pointer-events: none; white-space: nowrap; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .word-token .tooltip-text::after { 
+            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; 
+            border-width: 5px; border-style: solid; border-color: var(--tooltip-bg) transparent transparent transparent; 
+        }
+        .word-token:hover .tooltip-text,
+        .word-token .tooltip-text.tooltip-visible { 
+            visibility: visible; 
+            opacity: 1; 
+            transition-delay: 0s; 
+        }
+
+        /* Scramble Question Specific Styles */
+        #scramble-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; 
+            margin-top: 10px;
+            width: 100%;
+        }
+        #drop-zone {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            align-items: center;
+            min-height: 50px; 
+            width: 100%;
+            max-width: 300px; 
+            padding: 10px;
+            background-color: var(--drop-zone-bg);
+            border: 2px dashed var(--tile-border);
+            border-radius: 8px;
+            transition: background-color 0.2s ease, border-color 0.2s ease; 
+        }
+        #drop-zone .letter-tile {
+             flex-shrink: 0; 
+             transition: transform 0.2s ease-out; 
+             position: relative; /* Needed for insertion marker */
+        }
+        /* Style for the insertion point marker */
+        .letter-tile.insertion-point-before::before {
+             content: '';
+             position: absolute;
+             left: -6px; /* Position to the left */
+             top: 10%;
+             bottom: 10%;
+             width: 3px; /* Marker width */
+             background-color: var(--drop-indicator-color);
+             border-radius: 2px;
+             animation: blink 1s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0.3; } }
+
+        #letter-tiles {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px; 
+            padding: 10px 0;
+        }
+        .letter-tile {
+            background-color: var(--tile-bg);
+            border: 1px solid var(--tile-border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: grab;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            min-width: 40px; 
+            text-align: center;
+            user-select: none; 
+            -webkit-user-select: none; 
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .letter-tile:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+        #drop-zone .letter-tile {
+             cursor: pointer; 
+             background-color: var(--bg-element-hover); 
+        }
+        .dragging { 
+             opacity: 0.4;
+             transform: scale(0.9); 
+        }
+        .drag-over { 
+             border-color: var(--accent-magenta);
+             background-color: rgba(42, 26, 77, 0.7);
+        }
+
+        #answer-options-container { 
+            width: 100%; 
+            margin-top: auto; 
+            padding-top: 10px; 
+            flex-shrink: 0; 
+            margin-bottom: 25px; 
+        }
+        #answer-options { 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        } 
+        .action-button, 
+        #answer-options button { 
+            display: block; width: 100%; padding: 10px 15px; margin: 0; 
+            background-image: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-light) 100%); 
+            color: var(--text-white); border: none; border-radius: 10px; 
+            font-family: 'Mulish', sans-serif; 
+            font-size: 0.9em; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: background-color 0.2s ease, transform 0.1s ease, background-image var(--transition-speed-fast) ease, box-shadow var(--transition-speed-fast) ease; 
+            text-transform: none; 
+            letter-spacing: 0.2px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 -2px 0px rgba(0,0,0,0.1); 
+            line-height: 1.3; 
+            text-align: center; 
+        }
+        .action-button:hover, 
+        #answer-options button:hover { 
+            background-image: linear-gradient(135deg, var(--accent-blue-light) 0%, var(--accent-blue) 100%); 
+            transform: translateY(-1px); 
+            box-shadow: 0 5px 15px var(--accent-blue-glow); 
+        }
+        .action-button:disabled, 
+        #answer-options button:disabled { 
+            background-image: none; background-color: #332A4F; 
+            color: #777; 
+            cursor: not-allowed; transform: translateY(0); box-shadow: none; 
+        }
+        #answer-options button.correct-answer-style { 
+            background-image: none; background-color: var(--correct-green) !important; 
+            color: var(--bg-primary) !important; font-weight: 800; 
+        }
+        #answer-options button.incorrect-answer-style { 
+            background-image: none; background-color: var(--incorrect-red) !important; 
+            color: var(--text-white) !important; 
+        }
+
+        #scramble-input { 
+            background-color: var(--bg-element); color: var(--text-primary);
+            border: 2px solid var(--accent-blue); border-radius: 10px; padding: 10px; 
+            text-align: center; font-size: 0.9em; width: 100%; max-width: 240px; 
+            margin: 6px auto 8px auto; font-weight: 600;
+        }
+        #scramble-input:focus { 
+            border-color: var(--accent-magenta); 
+            box-shadow: 0 0 8px var(--accent-magenta-glow);
+            outline: none;
+        }
+        #feedback-container { 
+            margin-top: 8px; 
+            font-size: 0.95em; 
+            font-weight: 600; 
+            min-height: 20px; 
+            text-align: center; 
+        } 
+        .correct { color: var(--correct-green); text-shadow: 0 0 8px var(--correct-green); }
+        .incorrect { color: var(--incorrect-red); text-shadow: 0 0 8px var(--incorrect-red); }
+        
+        /* Post-answer translation area - Overlay Styling */
+        #post-answer-translation-area { 
+            position: absolute;
+            top: 0; 
+            left: 0;
+            width: 100%;
+            height: 100%; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            padding: 30px 35px; /* Increased padding */
+            background-color: var(--bg-element); /* Opaque */
+            border-radius: 8px; 
+            color: var(--text-primary); 
+            font-size: 0.85em; 
+            line-height: 1.5; 
+            text-align: center; 
+            z-index: 5; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s; 
+            transform: scale(1.05); 
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none; 
+        }
+        #post-answer-translation-area:not(.hidden) { 
+             transform: scale(1.0); 
+             opacity: 1;
+             visibility: visible; 
+             pointer-events: auto; 
+             transition-delay: 0s; 
+        }
+
+        #post-answer-translation-area .original-phrase, 
+        #post-answer-translation-area .translated-phrase { 
+            display: block; margin-bottom: 8px; 
+            width: 100%; 
+        }
+        #post-answer-translation-area .original-phrase strong { 
+            color: var(--text-secondary); 
+            font-weight: 600; 
+            margin-right: 5px;
+        }
+         #post-answer-translation-area .original-phrase span { 
+             color: var(--text-primary);
+         }
+        #post-answer-translation-area .translated-phrase em { 
+            font-style: normal; 
+            color: var(--accent-cyan); 
+            font-weight: 700; 
+            display: block; 
+            margin-top: 5px; 
+        }
+         #post-answer-translation-area .translated-phrase span { 
+             color: var(--accent-cyan);
+             font-weight: 700;
+         }
+
+
+        #results-screen { justify-content: center; }
+        #results-screen .results-icon { font-size: 3.5em; color: var(--accent-magenta); margin-bottom: 15px; animation: bounceIcon 1s ease-out; }
+        @keyframes bounceIcon { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-15px);} 60% {transform: translateY(-8px);} }
+        #results-screen .results-message { font-size: 1.1em; line-height: 1.5; margin-bottom: 12px; font-weight: 500; }
+        #results-screen .results-score {
+            font-size: 1.3em; font-weight: 700; color: var(--text-white);
+            background-color: var(--accent-blue); padding: 8px 15px; border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        #lesson-screen .action-button {
+             margin-top: 8px; 
+        }
+        #next-question-button, #results-continue-button { 
+             margin-bottom: 5px; 
+        }
+        #celebration-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
+
+        /* Removed audio styles */
+
+    </style>
+<script defer="" data-domain="white-suzie-4.tiiny.site" src="https://analytics.tiiny.site/js/plausible.js"></script><script defer="" data-domain="white-suzie-4.tiiny.site" src="https://analytics.tiiny.site/js/plausible.js"></script></head>
+<body>
+    <div class="container">
+        <div class="app-header hidden"> 
+            <a href="#" class="close-btn" id="close-app-btn">×</a>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="lesson-progress-bar"></div>
+            </div>
+            <div class="score-display" id="user-score-placeholder">B 7</div>
+        </div>
+
+        <section id="series-selection-screen" class="screen-section">
+            <div> 
+                <h2>Elige una Serie</h2>
+                <div id="series-grid"></div>
+            </div>
+        </section>
+
+        <section id="lesson-screen" class="screen-section hidden">
+            <div id="lesson-content-wrapper"> 
+                <div id="video-player-container">
+                    </div>
+                <div id="question-prompt"></div>
+                
+                <div id="question-content-area"> 
+                    <p id="subtitle-text"></p>
+                    <div id="scramble-container" class="hidden">
+                        <div id="drop-zone"></div>
+                        <div id="letter-tiles"></div>
+                    </div>
+                    <input type="text" id="scramble-input" class="hidden" placeholder="Escribe aquí..."> 
+                    <div id="post-answer-translation-area" class="hidden">
+                        <p class="original-phrase"><strong>Original:</strong> <span id="original-phrase-display"></span></p>
+                        <p class="translated-phrase"><em>Traducción:</em> <span id="translated-phrase-display"></span></p>
+                    </div>
+                </div>
+                <div id="feedback-container"><p id="feedback-text"></p></div>
+            </div> 
+            
+            <div id="answer-options-container"> 
+                <div id="answer-options"></div>
+                <button id="submit-answer-button" class="action-button hidden">Verificar</button>
+                <button id="next-question-button" class="action-button hidden">Siguiente</button>
+            </div>
+
+        </section>
+
+        <section id="results-screen" class="screen-section hidden">
+            <div class="results-icon">🎉</div>
+            <p class="results-message" id="results-message-text">¡Lección completada!</p> 
+            <div class="results-score" id="results-score-value">Puntuación: 0/0</div>
+            <button id="results-continue-button" class="action-button continue-button">Volver a Series</button>
+        </section>
+
+        <canvas id="celebration-canvas" class="hidden"></canvas>
+    </div>
+
+    <script>
+        // Version comment: v7.3
+        console.log("Executing Wordbox Script v7.3 (Repeat Questions & Final Fixes)");
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element Selection ---
+            const appHeader = document.querySelector('.app-header'); 
+            const closeAppBtn = document.getElementById('close-app-btn');
+            const lessonProgressBar = document.getElementById('lesson-progress-bar');
+            const seriesSelectionScreen = document.getElementById('series-selection-screen');
+            const lessonScreen = document.getElementById('lesson-screen');
+            const resultsScreen = document.getElementById('results-screen');
+            const seriesGrid = document.getElementById('series-grid');
+            const videoPlayerContainer = document.getElementById('video-player-container');
+            const questionPromptElement = document.getElementById('question-prompt'); 
+            const subtitleTextElement = document.getElementById('subtitle-text');
+            const answerOptionsContainer = document.getElementById('answer-options'); 
+            const scrambleInputElement = document.getElementById('scramble-input'); 
+            const submitAnswerButton = document.getElementById('submit-answer-button');
+            const nextQuestionButton = document.getElementById('next-question-button');
+            const feedbackTextElement = document.getElementById('feedback-text');
+            const resultsScoreValue = document.getElementById('results-score-value');
+            const resultsContinueButton = document.getElementById('results-continue-button');
+            const celebrationCanvas = document.getElementById('celebration-canvas');
+            const userScorePlaceholder = document.getElementById('user-score-placeholder'); 
+            const postAnswerTranslationArea = document.getElementById('post-answer-translation-area');
+            const originalPhraseDisplay = document.getElementById('original-phrase-display');
+            const translatedPhraseDisplay = document.getElementById('translated-phrase-display');
+            const scrambleContainer = document.getElementById('scramble-container');
+            const dropZone = document.getElementById('drop-zone');
+            const letterTilesContainer = document.getElementById('letter-tiles');
+            // Removed audio elements
+
+            // --- CRITICAL ELEMENT CHECK ---
+            // ... (Keep check for safety) ...
+             const criticalElementSelectors = { 
+                appHeader: '.app-header', closeAppBtn: '#close-app-btn', lessonProgressBar: '#lesson-progress-bar', 
+                seriesSelectionScreen: '#series-selection-screen', lessonScreen: '#lesson-screen', resultsScreen: '#results-screen',
+                seriesGrid: '#series-grid', videoPlayerContainer: '#video-player-container', questionPromptElement: '#question-prompt', 
+                subtitleTextElement: '#subtitle-text', answerOptionsContainer: '#answer-options', scrambleInputElement: '#scramble-input', 
+                submitAnswerButton: '#submit-answer-button', nextQuestionButton: '#next-question-button',
+                feedbackTextElement: '#feedback-text', resultsScoreValue: '#results-score-value', 
+                resultsContinueButton: '#results-continue-button', userScorePlaceholder: '#user-score-placeholder',
+                postAnswerTranslationArea: '#post-answer-translation-area', originalPhraseDisplay: '#original-phrase-display', 
+                translatedPhraseDisplay: '#translated-phrase-display',
+                scrambleContainer: '#scramble-container', dropZone: '#drop-zone', letterTilesContainer: '#letter-tiles'
+            };
+            let allElementsFound = true;
+            console.log("--- Initializing: Checking Critical DOM Elements (v7.3) ---");
+            for (const key in criticalElementSelectors) {
+                const element = key === 'appHeader' ? document.querySelector(criticalElementSelectors[key]) : document.getElementById(criticalElementSelectors[key].substring(1));
+                if (element === null) {
+                    console.error(`FATAL ERROR (v7.3): HTML Element for "${key}" (selector: ${criticalElementSelectors[key]}) was NOT FOUND. Ensure it exists in your HTML and is spelled correctly.`);
+                    allElementsFound = false;
+                }
+            }
+            if (!allElementsFound) {
+                alert("A critical HTML element is missing. The application cannot start. Please check the console (F12) for details of missing elements (v7.3).");
+                const container = document.querySelector('.container');
+                if (container) { container.innerHTML = `<div style="color:red; padding:20px; text-align:center;">FATAL ERROR (v7.3): A critical HTML element is missing. App cannot start. Check console (F12).</div>`; }
+                return; 
+            }
+            console.log("--- All critical DOM elements found (v7.3). Proceeding with init. ---");
+            // --- END CRITICAL ELEMENT CHECK ---
+
+
+            const tvSeriesData = [
+                { 
+                    id: 'breakingbad', 
+                    name: 'Breaking Bad', 
+                    image: 'https://ntvb.tmsimg.com/assets/p8696131_b_h10_aa.jpg?w=960&h=540' 
+                }
+            ];
+            
+            const lessonsData = { 
+                breakingbad: [
+                    { yarnId: 'bb75e121-e1d0-49b0-b15b-2fec35cec287', subtitle: "I am not in danger, Skyler. I am the danger.", spanish_translation: "No estoy en peligro, Skyler. Yo soy el peligro.", words: [{word:"I", translation:"Yo"}, {word:"am", translation:"estoy"}, {word:"not", translation:"no"}, {word:"in", translation:"en"}, {word:"danger", translation:"peligro"}, {word:"Skyler", translation:"Skyler"}, {word:"I", translation:"Yo"}, {word:"am", translation:"soy"}, {word:"the", translation:"el"}, {word:"danger", translation:"peligro"}], keyword: "danger", prompt: "Ordena las letras", type: "scramble"}, 
+                    { yarnId: 'e370d9f0-63dd-47a5-b915-7190c850fb35', subtitle: "I am the one who knocks.", spanish_translation: "Yo soy el que llama.", words: [{word:"I", translation:"Yo"}, {word:"am", translation:"soy"}, {word:"the", translation:"el"}, {word:"one", translation:"que"}, {word:"who", translation:"quien"}, {word:"knocks", translation:"llama"}], keyword: "knocks", prompt: "Elige la definición para 'knocks'", type: "definition", options: [{ text: "Golpear una superficie ruidosamente para llamar la atención.", correct: true },{ text: "Afirmar dominio o control; ser el instigador.", correct: false },{ text: "Criticar o encontrar fallos.", correct: false }]}, 
+                    { yarnId: '47d9dd56-5b5e-496f-b0e2-7387a2217977', subtitle: "Do you know how much I make a year?", spanish_translation: "¿Sabes cuánto gano al año?", words: [{word:"Do", translation:"(auxiliar)"}, {word:"you", translation:"tú"}, {word:"know", translation:"sabes"}, {word:"how", translation:"cuánto"}, {word:"much", translation:"mucho"}, {word:"I", translation:"yo"}, {word:"make", translation:"gano"}, {word:"a", translation:"un/al"}, {word:"year", translation:"año"}], keyword: "make", prompt: "Elige la definición para 'make'", type: "definition", options: [{ text: "Crear o construir algo.", correct: false },{ text: "Forzar a alguien a hacer algo.", correct: false },{ text: "Ganar (dinero).", correct: true }]}, 
+                    { yarnId: 'e864815c-d87d-443b-8209-81b8ee07e2d8', subtitle: "You clearly don't know who you're talking to, so let me clue you in.", spanish_translation: "Claramente no sabes con quién estás hablando, así que déjame ponerte al tanto.", words: [{word:"You", translation:"Tú"}, {word:"clearly", translation:"claramente"}, {word:"don't", translation:"no"}, {word:"know", translation:"sabes"}, {word:"who", translation:"quién"}, {word:"you're", translation:"estás"}, {word:"talking", translation:"hablando"}, {word:"to", translation:"a"}, {word:"so", translation:"así que"}, {word:"let", translation:"deja"}, {word:"me", translation:"me"}, {word:"clue", translation:"pista"}, {word:"you", translation:"te"}, {word:"in", translation:"en"}], keyword: "clue you in", prompt: "Elige la mejor interpretación para 'clue you in'", type: "comprehension", options: [{ text: "Que quiere compartir un secreto divertido.", correct: false },{ text: "Que está a punto de revelar información importante sobre sí mismo, posiblemente de forma amenazante.", correct: true },{ text: "Que necesita ayuda para encontrar una pista.", correct: false }]},
+                    { yarnId: null, subtitle: "", spanish_translation: "", words: [], keyword: "", 
+                      prompt: "Based on the clips, how much do you think Walt makes a year?", 
+                      type: "comprehension_summary", 
+                      options: [{ text: "Very little", correct: false },{ text: "A good amount", correct: false },{ text: "An unbelievable amount", correct: true }]
+                    }
+                ]
+            };
+
+            let currentSeriesId = null;
+            let originalLessonSet = []; 
+            let currentLessonSet = []; 
+            let currentQuestionIndex = 0; // Index within currentLessonSet (original + repeats)
+            let currentOriginalIndex = 0; // Index within originalLessonSet for progress bar
+            let currentQuestion = null;
+            let currentScore = 0;
+            let incorrectlyAnsweredIndices = []; 
+            let questionsAnsweredCorrectly = new Set(); 
+            let originalLessonLength = 0; 
+            let isRepeating = false; 
+
+            let draggedTile = null; 
+
+            const APP_CONFIG = {
+                feedbackDelay: 1500, 
+                finalCelebrationParticles: 160, 
+                defaultCelebrationParticles: 70 
+            };
+
+            // --- Helper Functions ---
+            function createOptionButton(optionData, clickHandler) { 
+                const button = document.createElement('button'); 
+                button.innerHTML = optionData.text; 
+                button.dataset.correct = optionData.correct;
+                button.disabled = false; 
+                button.addEventListener('click', () => clickHandler(optionData.correct, button));
+                return button; 
+            }
+
+            // --- Drag & Drop Handlers ---
+            function handleDragStart(e) {
+                draggedTile = this; 
+                setTimeout(() => this.classList.add('dragging'), 0); 
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', this.textContent); 
+            }
+
+            function handleDragEnd(e) {
+                setTimeout(() => {
+                     if(draggedTile) draggedTile.classList.remove('dragging');
+                     draggedTile = null;
+                     // Clear insertion markers on drag end
+                     Array.from(dropZone.children).forEach(child => child.classList.remove('insertion-point-before'));
+                }, 0);
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault(); 
+                e.dataTransfer.dropEffect = 'move';
+                const container = this; 
+                if (container === dropZone) { 
+                     container.classList.add('drag-over'); 
+                     // Add insertion point marker logic
+                     const children = Array.from(container.children);
+                     let foundMarker = false;
+                     children.forEach(child => {
+                          child.classList.remove('insertion-point-before'); // Clear existing markers
+                          if (child !== draggedTile) { // Don't mark self
+                               const rect = child.getBoundingClientRect();
+                               if (!foundMarker && (e.clientX < rect.left + rect.width / 2 || e.clientY < rect.top + rect.height / 2)) {
+                                    child.classList.add('insertion-point-before');
+                                    foundMarker = true;
+                               }
+                          }
+                     });
+                }
+            }
+
+            function handleDragLeave(e) {
+                 if (!this.contains(e.relatedTarget)) {
+                     this.classList.remove('drag-over');
+                     // Remove insertion markers when leaving the drop zone
+                     Array.from(this.children).forEach(child => child.classList.remove('insertion-point-before'));
+                 }
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                Array.from(this.children).forEach(child => child.classList.remove('insertion-point-before')); // Clear visual cues
+
+                if (!draggedTile) return; 
+
+                const targetContainer = this.id === 'drop-zone' || this.id === 'letter-tiles' ? this : null;
+                const targetTile = e.target.closest('.letter-tile'); 
+
+                if (targetContainer) {
+                    let beforeElement = null;
+                    if (targetContainer === dropZone) {
+                         const children = Array.from(dropZone.children);
+                         for(const child of children) {
+                             if (child === draggedTile) continue; 
+                             const rect = child.getBoundingClientRect();
+                             if (e.clientX < rect.left + rect.width / 2 || e.clientY < rect.top + rect.height / 2) { 
+                                 beforeElement = child;
+                                 break;
+                             }
+                         }
+                    }
+
+                    // No animation needed, just insert
+                    if (beforeElement) {
+                        targetContainer.insertBefore(draggedTile, beforeElement);
+                    } else {
+                        targetContainer.appendChild(draggedTile); 
+                    }
+                    checkScrambleOrder(); 
+                    
+                    // Ensure dragging class is removed AFTER drop logic
+                    if(draggedTile) draggedTile.classList.remove('dragging');
+                    draggedTile = null; 
+                } else {
+                     // If not dropped in a valid container, ensure dragging class is removed
+                     if(draggedTile) draggedTile.classList.remove('dragging');
+                     draggedTile = null; 
+                }
+            }
+
+             // --- Click Handlers for Tiles ---
+             function handleTileClick(e) {
+                 const tile = e.target.closest('.letter-tile');
+                 if (!tile || !tile.parentNode) return; 
+
+                 const currentParent = tile.parentNode;
+
+                 if (currentParent === letterTilesContainer) {
+                     dropZone.appendChild(tile);
+                 } else if (currentParent === dropZone) {
+                     letterTilesContainer.appendChild(tile);
+                 }
+                 checkScrambleOrder(); 
+             }
+
+
+            function checkScrambleOrder() {
+                 let currentOrder = '';
+                 dropZone.querySelectorAll('.letter-tile').forEach(tile => {
+                     currentOrder += tile.textContent;
+                 });
+                 // console.log("Current drop zone order:", currentOrder); 
+                 
+                 if (currentQuestion && currentQuestion.keyword && dropZone.children.length === currentQuestion.keyword.length) {
+                     submitAnswerButton.disabled = false;
+                 } else {
+                     submitAnswerButton.disabled = true;
+                 }
+            }
+
+
+            // --- Core Functions ---
+            function init() {
+                renderSeriesSelection(); 
+                submitAnswerButton.addEventListener('click', handleSubmitAnswer);
+                nextQuestionButton.addEventListener('click', loadNextQuestion);
+                resultsContinueButton.addEventListener('click', () => {
+                    switchScreen(seriesSelectionScreen);
+                });
+                closeAppBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchScreen(seriesSelectionScreen); 
+                });
+                dropZone.addEventListener('dragover', handleDragOver);
+                dropZone.addEventListener('dragleave', handleDragLeave);
+                dropZone.addEventListener('drop', handleDrop);
+                letterTilesContainer.addEventListener('dragover', handleDragOver); 
+                letterTilesContainer.addEventListener('dragleave', handleDragLeave);
+                letterTilesContainer.addEventListener('drop', handleDrop);       
+                letterTilesContainer.addEventListener('click', handleTileClick);
+                dropZone.addEventListener('click', handleTileClick);
+
+                // Removed audio error handling
+
+                if (celebrationCanvas) { 
+                    try { celebrationCanvas.getContext('2d'); } catch(e) { console.error("Error getting canvas context", e); }
+                }
+            }
+
+            function switchScreen(screenToShow) {
+                [seriesSelectionScreen, lessonScreen, resultsScreen].forEach(screen => {
+                    if(screen) screen.classList.add('hidden'); 
+                    if(screen) screen.style.animation = '';
+                });
+                
+                if (appHeader) { 
+                    if (screenToShow === seriesSelectionScreen) {
+                        appHeader.classList.add('hidden');
+                    } else {
+                        appHeader.classList.remove('hidden');
+                    }
+                }
+
+                if(screenToShow) { 
+                    screenToShow.classList.remove('hidden');
+                    screenToShow.style.animation = 'fadeInScreen 0.3s ease-out forwards';
+                }
+            }
+
+            function updateProgressBar() {
+                const progress = originalLessonLength > 0 ? (currentOriginalIndex / originalLessonLength) * 100 : 0;
+                if (lessonProgressBar) lessonProgressBar.style.width = `${Math.min(100, progress)}%`;
+            }
+
+            function renderSeriesSelection() {
+                if (!seriesGrid) return;
+                seriesGrid.innerHTML = ''; 
+                tvSeriesData.forEach(series => {
+                    const card = document.createElement('div');
+                    card.className = 'series-card';
+                    card.dataset.seriesId = series.id;
+                    const img = document.createElement('img');
+                    img.src = series.image;
+                    img.alt = series.name; 
+                    img.onerror = function() { 
+                        this.alt = `${series.name} (Imagen no encontrada)`;
+                        this.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22100%22%20height%3D%22100%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232C1F4C%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22Poppins%22%20font-size%3D%2212%22%20fill%3D%22%23EAE6FC%22%3EError%3C/text%3E%3C/svg%3E';
+                    };
+                    const name = document.createElement('p');
+                    name.textContent = series.name; 
+                    card.appendChild(img);
+                    card.appendChild(name);
+                    card.addEventListener('click', () => handleSeriesClick(series.id));
+                    seriesGrid.appendChild(card);
+                });
+                switchScreen(seriesSelectionScreen); 
+            }
+
+            function handleSeriesClick(seriesId) {
+                currentSeriesId = seriesId;
+                originalLessonSet = [...lessonsData[currentSeriesId]] || []; 
+                currentLessonSet = [...originalLessonSet]; 
+                originalLessonLength = originalLessonSet.filter(q => q.type !== 'comprehension_summary').length; 
+                currentScore = 0; 
+                currentQuestionIndex = 0; 
+                currentOriginalIndex = 0; 
+                incorrectlyAnsweredIndices = []; 
+                questionsAnsweredCorrectly = new Set(); 
+                isRepeating = false; 
+
+                updateProgressBar(); 
+                switchScreen(lessonScreen);
+                if (feedbackTextElement) {
+                    feedbackTextElement.textContent = ''; 
+                    feedbackTextElement.className = '';
+                }
+                loadNextQuestion();
+            }
+
+            function loadNextQuestion() {
+                // --- Reset UI ---
+                if (feedbackTextElement) { feedbackTextElement.textContent = ''; feedbackTextElement.className = ''; }
+                if (submitAnswerButton) submitAnswerButton.classList.add('hidden'); 
+                if (nextQuestionButton) nextQuestionButton.classList.add('hidden');
+                if (scrambleInputElement) scrambleInputElement.classList.add('hidden'); 
+                if (scrambleContainer) scrambleContainer.classList.add('hidden'); 
+                if (postAnswerTranslationArea) postAnswerTranslationArea.classList.add('hidden'); 
+                if (answerOptionsContainer) answerOptionsContainer.innerHTML = '';
+                if (dropZone) dropZone.innerHTML = ''; 
+                if (letterTilesContainer) letterTilesContainer.innerHTML = ''; 
+                // --- End Reset UI ---
+
+                // --- Determine Next Question (with repeat logic) ---
+                let questionToLoad;
+                let questionOriginalIdx; 
+
+                if (isRepeating) {
+                    if (incorrectlyAnsweredIndices.length === 0) { 
+                        displayResultsScreen();
+                        return;
+                    }
+                    questionOriginalIdx = incorrectlyAnsweredIndices[0]; 
+                    questionToLoad = originalLessonSet[questionOriginalIdx];
+                     console.log(`Repeating question at original index: ${questionOriginalIdx}`);
+                } else {
+                     if (currentQuestionIndex >= originalLessonSet.length) { 
+                         if (incorrectlyAnsweredIndices.length > 0) { 
+                             isRepeating = true;
+                             questionOriginalIdx = incorrectlyAnsweredIndices[0]; 
+                             questionToLoad = originalLessonSet[questionOriginalIdx];
+                             currentQuestionIndex = 0; // Reset index for the repeat list
+                             console.log("Starting repeat phase with index:", questionOriginalIdx);
+                         } else { 
+                             displayResultsScreen();
+                             return;
+                         }
+                     } else { 
+                         questionOriginalIdx = currentQuestionIndex;
+                         questionToLoad = originalLessonSet[questionOriginalIdx];
+                         currentOriginalIndex = questionOriginalIdx; 
+                     }
+                }
+                // --- End Determine Next Question ---
+
+                if (!questionToLoad) {
+                    console.error("Error: Could not determine next question.");
+                    displayResultsScreen(); 
+                    return;
+                }
+                
+                currentQuestion = questionToLoad; 
+                currentQuestion.originalIndex = questionOriginalIdx; 
+
+                displayQuestion(currentQuestion);
+                updateProgressBar(); 
+                // currentQuestionIndex is incremented AFTER answer check now
+            }
+            
+            function displayQuestion(question) {
+                // Hide/show video player
+                if (videoPlayerContainer) {
+                    videoPlayerContainer.style.display = question.type === 'comprehension_summary' ? 'none' : 'block';
+                    if (question.type !== 'comprehension_summary' && question.yarnId) {
+                        const videoBaseUrl = `https://media.wordbox.ai/series/${question.yarnId}`;
+                        // Added controls=0 parameter back
+                        const videoParams = "autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3"; 
+                        const videoUrl = `${videoBaseUrl}?${videoParams}`;
+                        videoPlayerContainer.innerHTML = `<iframe src="${videoUrl}" allow="autoplay; fullscreen" frameborder="0" allowfullscreen></iframe>`;
+                    } else {
+                         videoPlayerContainer.innerHTML = ''; 
+                    }
+                }
+                
+                // Set prompt text & style
+                if (questionPromptElement) {
+                     questionPromptElement.textContent = question.prompt || "Responde la pregunta:";
+                     questionPromptElement.classList.toggle('summary-prompt', question.type === 'comprehension_summary');
+                     if (question.type !== 'comprehension_summary') {
+                         questionPromptElement.style.color = ''; 
+                         questionPromptElement.style.backgroundColor = ''; 
+                     }
+                }
+
+                // Reset areas
+                if (subtitleTextElement) subtitleTextElement.innerHTML = ''; 
+                if (scrambleContainer) scrambleContainer.classList.add('hidden'); 
+                if (scrambleInputElement) scrambleInputElement.classList.add('hidden'); 
+                if (answerOptionsContainer) answerOptionsContainer.innerHTML = ''; 
+                if (subtitleTextElement) subtitleTextElement.classList.remove('hidden'); 
+
+                if (question.type === "scramble") {
+                    if (scrambleContainer) scrambleContainer.classList.remove('hidden');
+                    if (submitAnswerButton) {
+                         submitAnswerButton.classList.remove('hidden');
+                         submitAnswerButton.textContent = "Verificar";
+                         submitAnswerButton.disabled = true; 
+                    }
+                    if (subtitleTextElement) { 
+                         subtitleTextElement.classList.remove('hidden'); 
+                         let subtitleHtml = '';
+                         const keywordStr = (typeof question.keyword === 'string' || question.keyword instanceof String) ? question.keyword.toLowerCase() : '';
+                         if (question.subtitle && keywordStr) {
+                             const escapedKeyword = keywordStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                             const placeholder = "&nbsp;".repeat(Math.max(4, keywordStr.length)); 
+                             subtitleHtml = question.subtitle.replace(
+                                 new RegExp(`\\b(${escapedKeyword})\\b`, 'gi'),
+                                 `<span class="keyword-placeholder" data-keyword="$1">${placeholder}</span>`
+                             );
+                         } else {
+                              subtitleHtml = question.subtitle || ""; 
+                         }
+                         subtitleTextElement.innerHTML = subtitleHtml;
+                    }
+
+                    const letters = question.keyword.split('');
+                    const shuffledLetters = [...letters].sort(() => Math.random() - 0.5); 
+                    
+                    letterTilesContainer.innerHTML = ''; 
+                    dropZone.innerHTML = ''; 
+
+                    shuffledLetters.forEach(letter => {
+                        const tile = document.createElement('div');
+                        tile.classList.add('letter-tile');
+                        tile.textContent = letter;
+                        tile.draggable = true;
+                        tile.addEventListener('dragstart', handleDragStart);
+                        tile.addEventListener('dragend', handleDragEnd);
+                        letterTilesContainer.appendChild(tile);
+                    });
+
+                } else { 
+                    // For definition, comprehension, comprehension_summary
+                    if (question.type === 'comprehension_summary') {
+                         if (subtitleTextElement) subtitleTextElement.classList.add('hidden'); 
+                    } else {
+                        if (subtitleTextElement) subtitleTextElement.classList.remove('hidden'); 
+                        
+                        // --- Robust Multi-Word Highlight Logic with Tooltips ---
+                        let nodesToAppend = []; 
+                        const keywordStr = (typeof question.keyword === 'string' || question.keyword instanceof String) ? question.keyword.toLowerCase() : ''; 
+                        const keywordParts = keywordStr ? keywordStr.split(' ') : []; 
+                        
+                        if (question.words && question.words.length > 0) {
+                            let i = 0;
+                            while (i < question.words.length) {
+                                const wordData = question.words[i];
+                                const word = wordData.word;
+                                const translation = wordData.translation;
+                                let keywordMatchLength = 0; 
+
+                                // Check for keyword match starting at index i
+                                if (keywordParts.length > 0 && word.toLowerCase() === keywordParts[0]) {
+                                    let potentialMatch = true;
+                                    for (let j = 1; j < keywordParts.length; j++) {
+                                        if (i + j >= question.words.length || question.words[i + j].word.toLowerCase() !== keywordParts[j]) {
+                                            potentialMatch = false; break;
+                                        }
+                                    }
+                                    if (potentialMatch) {
+                                        keywordMatchLength = keywordParts.length;
+                                    }
+                                }
+
+                                if (keywordMatchLength > 0 && (question.type === "definition" || question.type === "comprehension")) {
+                                    const wrapperSpan = document.createElement('span');
+                                    wrapperSpan.classList.add('keyword-highlight');
+
+                                    for (let k = 0; k < keywordMatchLength; k++) {
+                                        const phraseWordData = question.words[i + k];
+                                        const phraseWord = phraseWordData.word;
+                                        const phraseTranslation = phraseWordData.translation || '';
+                                        const phraseTooltipSpan = phraseTranslation ? `<span class="tooltip-text">${phraseTranslation}</span>` : '';
+                                        
+                                        const innerTokenSpan = document.createElement('span');
+                                        innerTokenSpan.classList.add('word-token'); 
+                                        innerTokenSpan.setAttribute('aria-label', `Traducción: ${phraseTranslation}`);
+                                        innerTokenSpan.innerHTML = phraseWord + phraseTooltipSpan; 
+                                        
+                                        wrapperSpan.appendChild(innerTokenSpan);
+                                        if (k < keywordMatchLength - 1) {
+                                            wrapperSpan.appendChild(document.createTextNode(' ')); 
+                                        }
+                                    }
+                                    nodesToAppend.push(wrapperSpan); 
+                                    nodesToAppend.push(document.createTextNode(' ')); 
+                                    i += keywordMatchLength; 
+                                } else {
+                                    const tokenSpan = document.createElement('span');
+                                    tokenSpan.classList.add('word-token');
+                                    const tooltipSpan = translation ? `<span class="tooltip-text">${translation}</span>` : '';
+                                    tokenSpan.setAttribute('aria-label', `Traducción: ${translation || ''}`);
+                                    tokenSpan.innerHTML = `${word}${tooltipSpan}`;
+                                    nodesToAppend.push(tokenSpan);
+                                    nodesToAppend.push(document.createTextNode(' ')); 
+                                    i++;
+                                }
+                            }
+                        } else if (question.subtitle) { 
+                           let subtitleHtml = question.subtitle; 
+                            if (keywordStr) {
+                               const escapedKeyword = keywordStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                               const regex = new RegExp(`\\b(${escapedKeyword})\\b`, 'gi'); 
+                               subtitleHtml = subtitleHtml.replace(regex, '<span class="keyword-highlight">$1</span>');
+                            }
+                             nodesToAppend.push(document.createRange().createContextualFragment(subtitleHtml)); 
+                        }
+
+                        if (subtitleTextElement) {
+                             subtitleTextElement.innerHTML = ''; 
+                             nodesToAppend.forEach(node => subtitleTextElement.appendChild(node));
+                             // Add tap listener for tooltips AFTER content is added
+                             subtitleTextElement.addEventListener('touchend', handleTooltipTap);
+                        }
+                        // --- End Highlight Logic ---
+
+                    } // End else for subtitle display
+
+                    // Setup answer options
+                    if (question.options && answerOptionsContainer) { 
+                         if (submitAnswerButton) submitAnswerButton.classList.add('hidden'); 
+                         question.options.forEach(option => {
+                             answerOptionsContainer.appendChild(createOptionButton(option, checkAnswerMultipleChoice));
+                         });
+                    }
+                }
+                // currentQuestionIndex is handled in checkAnswer... functions now
+            }
+
+
+            function showPostAnswerTranslation() { 
+                if (!postAnswerTranslationArea || !originalPhraseDisplay || !translatedPhraseDisplay) return;
+                if (currentQuestion && currentQuestion.type !== 'comprehension_summary' && currentQuestion.spanish_translation) { 
+                    originalPhraseDisplay.innerHTML = currentQuestion.subtitle || ""; 
+                    translatedPhraseDisplay.textContent = currentQuestion.spanish_translation; 
+                    postAnswerTranslationArea.classList.remove('hidden'); 
+                } else {
+                    postAnswerTranslationArea.classList.add('hidden'); 
+                }
+            }
+
+            function handleSubmitAnswer() { 
+                if (currentQuestion && currentQuestion.type === "scramble") { 
+                    checkAnswerScramble(); 
+                }
+            }
+            
+            function checkAnswerMultipleChoice(isCorrect, clickedButton) {
+                 const questionOriginalIndex = currentQuestion.originalIndex; 
+
+                if (answerOptionsContainer) {
+                    answerOptionsContainer.querySelectorAll('button').forEach(btn => {
+                        btn.disabled = true; 
+                        if (btn.dataset.correct === "true") { btn.classList.add('correct-answer-style'); }
+                        else if (btn === clickedButton && !isCorrect) { btn.classList.add('incorrect-answer-style'); }
+                    });
+                }
+                if (isCorrect) {
+                    if (feedbackTextElement) {
+                        feedbackTextElement.textContent = "¡Correcto! 🎉"; feedbackTextElement.className = 'correct';
+                    }
+                    if (!questionsAnsweredCorrectly.has(questionOriginalIndex)) {
+                         currentScore++; 
+                         questionsAnsweredCorrectly.add(questionOriginalIndex);
+                         if (userScorePlaceholder) userScorePlaceholder.textContent = `B ${currentScore}`; 
+                    }
+                    const repeatIndex = incorrectlyAnsweredIndices.indexOf(questionOriginalIndex);
+                    if (repeatIndex > -1) {
+                         incorrectlyAnsweredIndices.splice(repeatIndex, 1);
+                         console.log("Removed from incorrect list:", questionOriginalIndex, incorrectlyAnsweredIndices);
+                    }
+                    celebrate(true); 
+                } else {
+                    if (feedbackTextElement) {
+                        feedbackTextElement.textContent = "Incorrecto."; feedbackTextElement.className = 'incorrect';
+                    }
+                    if (!isRepeating && !incorrectlyAnsweredIndices.includes(questionOriginalIndex)) {
+                         incorrectlyAnsweredIndices.push(questionOriginalIndex);
+                         console.log("Added to incorrect list:", questionOriginalIndex, incorrectlyAnsweredIndices);
+                    }
+                    celebrate(false); 
+                }
+                if(currentQuestion && currentQuestion.type !== 'comprehension_summary') {
+                     showPostAnswerTranslation(); 
+                }
+                 currentQuestionIndex++; // Increment index for the *next* question load
+                prepareForNextQuestion(); 
+            }
+            
+            function checkAnswerScramble() {
+                 const questionOriginalIndex = currentQuestion.originalIndex; 
+                let assembledWord = '';
+                dropZone.querySelectorAll('.letter-tile').forEach(tile => {
+                    assembledWord += tile.textContent;
+                });
+                const correctAnswer = currentQuestion.keyword; 
+                
+                dropZone.querySelectorAll('.letter-tile').forEach(tile => tile.draggable = false);
+                letterTilesContainer.querySelectorAll('.letter-tile').forEach(tile => tile.draggable = false);
+                if(submitAnswerButton) submitAnswerButton.disabled = true;
+
+
+                if (assembledWord.toLowerCase() === correctAnswer.toLowerCase()) {
+                    if (feedbackTextElement) {
+                        feedbackTextElement.textContent = "¡Correcto! 🎉"; feedbackTextElement.className = 'correct';
+                    }
+                    if (!questionsAnsweredCorrectly.has(questionOriginalIndex)) {
+                         currentScore++; 
+                         questionsAnsweredCorrectly.add(questionOriginalIndex);
+                         if (userScorePlaceholder) userScorePlaceholder.textContent = `B ${currentScore}`; 
+                    }
+                    const repeatIndex = incorrectlyAnsweredIndices.indexOf(questionOriginalIndex);
+                    if (repeatIndex > -1) {
+                         incorrectlyAnsweredIndices.splice(repeatIndex, 1);
+                          console.log("Removed from incorrect list:", questionOriginalIndex, incorrectlyAnsweredIndices);
+                    }
+                    celebrate(true);
+                } else {
+                    if (feedbackTextElement) {
+                        feedbackTextElement.textContent = `Incorrecto. La palabra era "${correctAnswer}".`;
+                        feedbackTextElement.className = 'incorrect'; 
+                    }
+                    if (!isRepeating && !incorrectlyAnsweredIndices.includes(questionOriginalIndex)) {
+                         incorrectlyAnsweredIndices.push(questionOriginalIndex);
+                         console.log("Added to incorrect list:", questionOriginalIndex, incorrectlyAnsweredIndices);
+                    }
+                    celebrate(false);
+                }
+                showPostAnswerTranslation(); 
+                currentQuestionIndex++; // Increment index for the *next* question load
+                prepareForNextQuestion(); 
+            }
+            
+            function prepareForNextQuestion() {
+                if (submitAnswerButton) submitAnswerButton.classList.add('hidden'); 
+                if (currentQuestion && currentQuestion.type === "scramble") { 
+                   // Tiles already made non-draggable
+                }
+                if (answerOptionsContainer) {
+                    answerOptionsContainer.querySelectorAll('button').forEach(btn => btn.disabled = true);
+                }
+                // Keep translation overlay visible until next question loads
+                if (nextQuestionButton) {
+                    setTimeout(() => { 
+                        // Don't hide translation here
+                        if (nextQuestionButton) nextQuestionButton.classList.remove('hidden'); 
+                    }, APP_CONFIG.feedbackDelay); 
+                }
+            }
+
+            // --- Tooltip Tap Logic ---
+            let activeTooltip = null; 
+
+            function handleTooltipTap(e) {
+                 const targetToken = e.target.closest('.word-token');
+                 if (!targetToken) {
+                      if (activeTooltip && !e.target.closest('.tooltip-text')) {
+                           hideAllTooltips();
+                      }
+                      return; 
+                 }
+
+                 const tooltip = targetToken.querySelector('.tooltip-text');
+                 if (!tooltip) return; 
+
+                 e.stopPropagation(); 
+
+                 if (activeTooltip && activeTooltip !== tooltip) {
+                      activeTooltip.classList.remove('tooltip-visible');
+                 }
+
+                 tooltip.classList.toggle('tooltip-visible');
+                 activeTooltip = tooltip.classList.contains('tooltip-visible') ? tooltip : null;
+            }
+
+            function hideAllTooltips(e) {
+                 if (activeTooltip && (!e || !e.target.closest('.word-token'))) { 
+                      activeTooltip.classList.remove('tooltip-visible');
+                      activeTooltip = null;
+                 }
+            }
+            document.body.addEventListener('click', hideAllTooltips);
+            document.body.addEventListener('touchend', (e) => {
+                 setTimeout(() => hideAllTooltips(e), 50); 
+            });
+            // --- End Tooltip Logic ---
+
+
+            function displayResultsScreen() {
+                updateProgressBar(); 
+                if (lessonProgressBar) lessonProgressBar.style.width = `100%`; 
+                switchScreen(resultsScreen);
+                if (resultsScoreValue) resultsScoreValue.textContent = `Puntuación: ${currentScore}/${originalLessonLength}`;
+                
+                const resultsMessageEl = document.getElementById('results-message-text');
+                if (resultsMessageEl) {
+                    if (originalLessonLength === 0) {
+                         resultsMessageEl.textContent = "Lección completada.";
+                    } else if (currentScore === originalLessonLength) {
+                        resultsMessageEl.textContent = "¡Felicidades! ¡Puntuación perfecta!";
+                    } else if (currentScore >= originalLessonLength / 2) {
+                        resultsMessageEl.textContent = "¡Buen trabajo! Lección completada.";
+                    } else {
+                        resultsMessageEl.textContent = "Lección completada. ¡Sigue practicando!";
+                    }
+                }
+                celebrate(true, APP_CONFIG.finalCelebrationParticles); 
+            }
+
+            function scrambleString(str) {
+                if (!str) return ''; let arr = str.split('');
+                for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+                if (arr.join('') === str && str.length > 1 && arr.length > 2) { return scrambleString(str); } return arr.join('');
+            }
+
+            function celebrate(isCorrect, particleCount = APP_CONFIG.defaultCelebrationParticles) {
+                if (!celebrationCanvas) return;
+                const celebrationColor = 'var(--accent-magenta)'; const ctx = celebrationCanvas.getContext('2d');
+                if (!ctx) return; 
+                celebrationCanvas.classList.remove('hidden');
+                celebrationCanvas.width = window.innerWidth; celebrationCanvas.height = window.innerHeight;
+                const particles = [];
+                for (let i = 0; i < particleCount; i++) { 
+                    const angle = Math.random() * Math.PI * 2; const speed = Math.random() * (isCorrect ? 7 : 4) + 2; 
+                    particles.push({ x: Math.random() * celebrationCanvas.width, y: Math.random() * celebrationCanvas.height * 0.5, vx: Math.cos(angle) * speed * (Math.random() > 0.5 ? 1 : -1) * 0.5, vy: Math.sin(angle) * speed * 0.3 - (isCorrect ? 3 : 1), color: celebrationColor, size: Math.random() * (isCorrect ? 10 : 6) + 3, life: 100 + Math.random() * 60, rotation: Math.random() * Math.PI * 2, rotationSpeed: (Math.random() - 0.5) * 0.15, opacity: 1 }); 
+                }
+                function animateConfetti() {
+                    try { ctx.clearRect(0, 0, celebrationCanvas.width, celebrationCanvas.height); } catch(e) {}
+                    let activeParticles = false;
+                    particles.forEach(p => { 
+                        if (p.life > 0) { 
+                            activeParticles = true; p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.life--; p.rotation += p.rotationSpeed;
+                            p.opacity = Math.max(0, p.life / (100 + Math.random() * 60));
+                            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rotation); ctx.globalAlpha = p.opacity;
+                            ctx.fillStyle = p.color; ctx.beginPath();
+                            ctx.ellipse(0, 0, p.size, p.size * 0.4, Math.random() * Math.PI, 0, Math.PI * 2); ctx.fill();
+                            ctx.restore();
+                        } 
+                    });
+                    if (activeParticles) { requestAnimationFrame(animateConfetti); } else { if(celebrationCanvas) celebrationCanvas.classList.add('hidden'); }
+                }
+                animateConfetti();
+            }
+            init();
+        });
+    </script>
+
+
+</body></html>
